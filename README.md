@@ -1,15 +1,15 @@
 # RHEL8 Image for Molecule testing
 
-Container Image, based on UBI8, for testing Ansible content with Molecule.
+Container Image, based on UBI8, for testing Ansible content.
 
 A user `ansible` is created with password-less sudo configured. A couple of default packages are installed, but not all packages as in a *normal* RHEL8 installation. Add additional packages in a `prepare.yml` during Molecule *create* stage.
 
-> 💡 NOTE 💡  
+> [!WARNING]
+> **RHEL8 uses Python 3.6.8 from `/usr/libexec/platform-python` by default.**  
 > Newer Ansible versions require a more recent version of Python3 on target devices!  
-> RHEL8 uses Python 3.6.8 from `/usr/libexec/platform-python` by default.  
-> Use ansible-core 2.16.14 to be able to automate it (or upgrade the Python installation on the target device if you want to use ansible-core > 2.17.x)  
+> **Use ansible-core <2.17.x** (e.g. 2.16.19) **to be able to automate it** (or upgrade the Python installation on the target device if you want to use ansible-core > 2.17.x).  
 
-[![Container Build and Publish](https://github.com/TimGrt/rhel8-molecule-test-image/actions/workflows/cd.yml/badge.svg)](https://github.com/TimGrt/rhel8-molecule-test-image/actions/workflows/cd.yml)
+[![Container Build and Publish](https://github.com/TimGrt/ansible-test-image-rhel8/actions/workflows/cd.yml/badge.svg)](https://github.com/TimGrt/ansible-test-image-rhel8/actions/workflows/cd.yml)
 
 ## How to Build
 
@@ -17,7 +17,7 @@ If you need to build the image on your own locally, do the following:
 
   1. [Install Podman](https://podman.io/docs/installation).
   2. Clone the repository and `cd` into this directory.
-  3. Run `podman build -t rhel8-molecule-test .`
+  3. Run `podman build -t ansible-test-rhel8 .`
 
 ## How to Use with Molecule
 
@@ -34,7 +34,7 @@ driver:
   name: podman
 platforms:
   - name: rhel8-molecule-test
-    image: ghcr.io/timgrt/rhel8-molecule-test-image:main
+    image: ghcr.io/timgrt/ansible-test-image-rhel8:main
     groups:
       - molecule
     volumes:
