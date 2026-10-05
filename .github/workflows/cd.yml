@@ -9,6 +9,8 @@ on:
       - closed
     paths:
       - 'Containerfile'
+  schedule:
+    - cron: '0 0 1 * *'
 
 jobs:
   linter:
@@ -30,6 +32,17 @@ jobs:
     permissions:
       contents: read
       packages: write
+    strategy:
+      matrix:
+        include:
+          - tags: |
+              ghcr.io/${{ github.repository }}:${{ github.sha }}
+              ghcr.io/${{ github.repository }}:${{ github.base_ref }}
+              ghcr.io/${{ github.repository }}:latest
+            build-args: ""
+          - tags: ghcr.io/${{ github.repository }}:python3.12
+            build-args: |
+              PYTHON_VERSION=3.12
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -41,17 +54,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/${{ github.repository }}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
         with:
           context: .
           file: Containerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ matrix.tags }}
+          build-args: ${{ matrix.build-args }}
