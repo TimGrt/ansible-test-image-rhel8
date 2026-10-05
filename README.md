@@ -7,7 +7,7 @@ A user `ansible` is created with password-less sudo configured. A couple of defa
 > [!WARNING]
 > **RHEL8 uses Python 3.6.8 from `/usr/libexec/platform-python` by default.**  
 > Newer Ansible versions require a more recent version of Python3 on target devices!  
-> **Use ansible-core <2.17.x** (e.g. 2.16.19) **to be able to automate it** (or upgrade the Python installation on the target device if you want to use ansible-core > 2.17.x).  
+> **Use ansible-core <2.17.x** (e.g. 2.16.19) **to be able to automate it**
 
 [![Container Build and Publish](https://github.com/TimGrt/ansible-test-image-rhel8/actions/workflows/cd.yml/badge.svg)](https://github.com/TimGrt/ansible-test-image-rhel8/actions/workflows/cd.yml)
 
@@ -18,6 +18,21 @@ If you need to build the image on your own locally, do the following:
   1. [Install Podman](https://podman.io/docs/installation).
   2. Clone the repository and `cd` into this directory.
   3. Run `podman build -t ansible-test-rhel8 .`
+
+### Build image with newer Python version
+
+To be able to use ansible-core > 2.17.x, upgrade the Python installation on the test image by providing the `PYTHON_VERSION` *build argument*:
+
+```bash
+podman build --build-arg PYTHON_VERSION=3.12 -t ansible-test-rhel8:python3.12 .
+```
+
+To use the Python3.12 Interpreter, provide the path to it e.g. as a host variable:
+
+```yaml
+# host_vars/rhel8_test_instance1.yml
+ansible_python_interpreter: /usr/bin/python3.12
+```
 
 ## How to Use with Molecule
 
