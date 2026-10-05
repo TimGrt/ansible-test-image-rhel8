@@ -18,12 +18,12 @@ repos:
       - id: markdownlint
         name: 📋 Check Markdown syntax
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.37.4
+    rev: 0.38.2
     hooks:
       - id: check-github-workflows
         name: ➿ Check GitHub Workflows
   - repo: https://github.com/hadolint/hadolint
-    rev: v2.14.0
+    rev: v2.15.1
     hooks:
       - id: hadolint-docker
         name: 📦 Lint Container definition
