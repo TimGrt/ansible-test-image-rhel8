@@ -36,11 +36,15 @@ jobs:
       matrix:
         include:
           - tags: |
-              ghcr.io/${{ github.repository }}:${{ github.sha }}
-              ghcr.io/${{ github.repository }}:${{ github.base_ref }}
-              ghcr.io/${{ github.repository }}:latest
+              type=ref,event=branch
+              type=sha
+            flavor: |
+              latest=auto
+              prefix=
+              suffix=
             build-args: ""
-          - tags: ghcr.io/${{ github.repository }}:python3.12
+          - tags: |
+              type=raw,python3.12
             build-args: |
               PYTHON_VERSION=3.12
     steps:
@@ -54,11 +58,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Create metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          tags: ${{ matrix.tags }}
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
         with:
           context: .
           file: Containerfile
           push: true
-          tags: ${{ matrix.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           build-args: ${{ matrix.build-args }}
